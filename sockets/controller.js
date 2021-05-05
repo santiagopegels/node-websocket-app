@@ -16,6 +16,30 @@ const socketController = (socket) => {
 
     })
 
+    socket.on('attend-ticket', ({screen}, callback) => {
+
+        if(!screen) {
+            return callback({
+                ok: false,
+                msg: 'El escritorio es obligatorio'
+            })
+        }
+
+        const ticket = ticketControl.attendTicket(screen)
+
+        if(!ticket){
+            return callback({
+                ok: false,
+                msg: 'No hay tickets pendientes'
+            })
+        } else {
+            return callback({
+                ok: true,
+                ticket
+            })
+        }
+    })
+
 }
 
 
