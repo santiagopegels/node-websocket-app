@@ -3,22 +3,24 @@ const TicketControl = require('../models/ticketControl')
 const ticketControl = new TicketControl()
 
 const socketController = (socket) => {
-    
-    console.log('Cliente conectado', socket.id );
+
+    console.log('Cliente conectado', socket.id);
 
     socket.emit('last-ticket', ticketControl.lastTicket)
+    socket.emit('actual-state', ticketControl.lastFourTickets)
 
-    socket.on('next-ticket', ( payload, callback ) => {
-        
+    socket.on('next-ticket', (payload, callback) => {
+
         const nextTicket = ticketControl.nextTicket()
 
-        callback( nextTicket )
+        callback(nextTicket)
 
     })
 
-    socket.on('attend-ticket', ({screen}, callback) => {
+    socket.on('attend-ticket', ({ screen }, callback) => {
 
-        if(!screen) {
+
+        if (!screen) {
             return callback({
                 ok: false,
                 msg: 'El escritorio es obligatorio'
@@ -27,7 +29,10 @@ const socketController = (socket) => {
 
         const ticket = ticketControl.attendTicket(screen)
 
-        if(!ticket){
+        socket.broadcast.emit('actual-state', ticketControl.lastFourTickets)
+
+
+        if (!ticket) {
             return callback({
                 ok: false,
                 msg: 'No hay tickets pendientes'
