@@ -3,7 +3,7 @@ const lblEscritorio = document.querySelector('h1')
 const btnAttend = document.querySelector('button')
 const lblTicket = document.querySelector('small')
 const divAlert = document.querySelector('.alert')
-
+const lblPendientes = document.querySelector('#lblPendientes')
 const searchParams = new URLSearchParams(window.location.search)
 
 if (!searchParams.has('escritorio')) {
@@ -25,6 +25,10 @@ socket.on('connect', () => {
 socket.on('disconnect', () => {
     btnAttend.disabled = true
 });
+
+socket.on('pending-tickets', (pendingLength) => {
+    lblPendientes.innerText=pendingLength
+})
 
 socket.on('last-ticket', (lastTicket) => {
    // lblNuevoTicket.innerText = 'Ticket ' + lastTicket

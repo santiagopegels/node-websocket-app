@@ -8,12 +8,15 @@ const socketController = (socket) => {
 
     socket.emit('last-ticket', ticketControl.lastTicket)
     socket.emit('actual-state', ticketControl.lastFourTickets)
+    socket.emit('pending-tickets', ticketControl.tickets.length)
 
     socket.on('next-ticket', (payload, callback) => {
 
         const nextTicket = ticketControl.nextTicket()
 
         callback(nextTicket)
+        socket.broadcast.emit('pending-tickets', ticketControl.tickets.length)
+
 
     })
 
@@ -30,6 +33,8 @@ const socketController = (socket) => {
         const ticket = ticketControl.attendTicket(screen)
 
         socket.broadcast.emit('actual-state', ticketControl.lastFourTickets)
+        socket.emit('pending-tickets', ticketControl.tickets.length)
+        socket.broadcast.emit('pending-tickets', ticketControl.tickets.length)
 
 
         if (!ticket) {
