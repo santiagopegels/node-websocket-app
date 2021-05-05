@@ -6,13 +6,13 @@ const socketController = (socket) => {
     
     console.log('Cliente conectado', socket.id );
 
+    socket.emit('last-ticket', ticketControl.lastTicket)
 
-    socket.on('enviar-mensaje', ( payload, callback ) => {
+    socket.on('next-ticket', ( payload, callback ) => {
         
-        const id = 123456789;
-        callback( id );
+        const nextTicket = ticketControl.nextTicket()
 
-        socket.broadcast.emit('enviar-mensaje', payload );
+        callback( nextTicket )
 
     })
 

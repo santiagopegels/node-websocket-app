@@ -1,6 +1,13 @@
 const path = require('path')
 const fs = require('fs')
 
+class Ticket {
+    constructor(number, screen){
+        this.number = number
+        this.screen = screen
+    }
+}
+
 class TicketControl {
 
     constructor() {
@@ -35,6 +42,33 @@ class TicketControl {
     saveDB() {
         const dbPath = path.join(__dirname, '../db/data.json')
         fs.writeFileSync(dbPath, JSON.stringify(this.toJson))
+    }
+
+    nextTicket(){
+        this.lastTicket += 1
+        const ticket = new Ticket(this.lastTicket, null)      
+        this.tickets.push(ticket) 
+        this.saveDB()
+        return 'Ticket ' + ticket.number
+    }
+
+    attendTicket( screen ){
+        if(this.tickets.length === 0){
+            return null;
+        }
+
+        const ticket = this.tickets.shift()
+        ticket.screen = screen
+
+        this.lastFourTickets.unshift(ticket)
+
+        if(this.lastFourTickets > 4){
+            this.lastFourTickets.splice(-1,1)
+        }
+
+        this.saveDB()
+
+        return ticket
     }
 }
 
